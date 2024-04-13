@@ -23,8 +23,10 @@ def extract(source):
 
 
 def store(extracted_local):
+    now_local = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
     cursor = connection.cursor()
-    cursor.execute("INSERT INTO temperatures VALUES(?,?)", extracted_local)
+    cursor.execute("INSERT INTO temperatures VALUES(?,?)",
+                   (now_local, extracted_local))
     connection.commit()
 
 
@@ -32,10 +34,6 @@ if __name__ == "__main__":
         while True:
             scraped = scrape(URL)
             extracted = extract(scraped)
-            now = datetime.now()
-            dt_string = now.strftime("%Y-%m-%d-%H-%M-%S")
-            data_input = dt_string + "," + extracted
-            data_input = data_input.split(",")
-            store(data_input)
-            print(data_input)
+            store(extracted)
+            print(extracted)
             time.sleep(2)
